@@ -201,7 +201,7 @@ console.log(waitingLiveAgent)
 
 
       // translate to sinhala
-      const response = await fetch('https://solutions.it-marketing.website/translate-to-english-api', {
+      const response = await fetch('https://solutions.it-marketing.website/financial-advisor-api', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
