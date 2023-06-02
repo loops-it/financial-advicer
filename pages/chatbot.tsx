@@ -675,7 +675,7 @@ console.log(waitingLiveAgent)
           {
             waitingLiveAgent && (
               <div className="d-flex bg-chat-close-msg text-center justify-content-center py-3">
-                <p className='mb-0'>Please wait...</p>
+                <p className='mb-0'>One of our Customer Support agents will be with you soon. Stay tuned!</p>
               </div>
             )
           }
@@ -690,7 +690,7 @@ console.log(waitingLiveAgent)
           {
             closeState && (
               <div className="d-flex bg-chat-close-msg text-center justify-content-center py-3">
-                <p className='mb-0'>This chat is closed</p>
+                <p className='mb-0'>Thank you for contacting us. </p>
               </div>
             )
           }
@@ -713,7 +713,7 @@ console.log(waitingLiveAgent)
                         className={`${styles.botRatingContainer} d-flex flex-column my-1`}
                       >
                         <p className={`${styles.rateTitle} mb-0 text-dark`}>
-                          Rate your conversation
+                        Did we help you?
                         </p>
                         <p className="text-dark mb-0">Add your rating</p>
                         <div className="star-rating">
