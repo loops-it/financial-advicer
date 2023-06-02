@@ -51,7 +51,7 @@ const LiveAgent = () => {
   const [timerRunning, setTimerRunning] = useState(false);
   const [closeRating, setCloseRating] = useState(false);
   const [waitingLiveAgent, setWaitingLiveAgent] = useState(false);
-
+  const [busyAgent, setBusyAgent] = useState(false);
 
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const LiveAgent = () => {
 
   useEffect(() => {
     // console.log("text there : ", checkNotSure)
-  }, [agentName, agentInfoMsg, agentImage, timerRunning, closeRating]);
+  }, [agentName, agentInfoMsg, agentImage, timerRunning, closeRating, busyAgent]);
 
 
   const [closeState, setCloseState] = useState(false);
@@ -96,7 +96,7 @@ const LiveAgent = () => {
             setShowChatRating(false)
           }
   }
-
+  let counter = 0;
   useEffect(() => {
     if(closeState === false){
       let intervalId: any;
@@ -146,6 +146,29 @@ const LiveAgent = () => {
                 pending: undefined,
               }));
             }
+          }
+          else{
+            if (counter > 6) {
+              const response = await fetch('https://solutions.it-marketing.website/chat-close-by-user', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ chatId: id }),
+              });
+
+              if (response.status !== 200) {
+                const error = await response.json();
+                throw new Error(error.message);
+              }
+              const data = await response.json();
+              setBusyAgent(true);
+              setWaitingLiveAgent(false)
+              console.log(data.success)
+              clearInterval(intervalId)
+            }
+            counter = counter + 1;
+            console.log("counter", counter)
           }
           
         } 
@@ -295,7 +318,7 @@ const LiveAgent = () => {
     if (messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-  }, [chatMessages]);
+  }, [chatMessages, closeRating, showChatRating, closeState, waitingLiveAgent, busyAgent]);
 
 
 
@@ -325,7 +348,7 @@ const LiveAgent = () => {
         </div>
       </div>
 
-      <div className={`${styles.messageWrapper}`}>
+      <div ref={messageListRef} className={`${styles.messageWrapper}`}>
       <div
             className={`${styles.botChatMsgContainer} d-flex flex-column my-2`}
           >
@@ -397,7 +420,6 @@ const LiveAgent = () => {
             )
           }
         <div
-          ref={messageListRef}
           className={`${styles.messageContentWrapper} d-flex flex-column`}
         >
           {chatMessages.map((message, index) => {
@@ -461,6 +483,13 @@ const LiveAgent = () => {
               </>
             );
           })}
+          {
+            busyAgent && (
+              <div className="d-flex bg-chat-close-msg text-center justify-content-center py-3">
+                <p className='mb-0'>Sorry, All agents are busy. Please try again later...</p>
+              </div>
+            )
+          }
           {
             waitingLiveAgent && (
               <div className="d-flex bg-chat-close-msg text-center justify-content-center py-3">

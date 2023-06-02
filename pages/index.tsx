@@ -64,7 +64,7 @@ export default function Home() {
             SELECT YOUR PREFERRED CHAT
           </p>
           {/* bot select card */}
-          <div className='d-flex flex-column justify-content-center align-items-center'>
+          <div className='d-flex flex-column justify-content-center align-items-center px-2 px-lg-4'>
             <div className={`${styles.chatSelectBox}  col-12  p-3 d-flex flex-column align-items-center ${styles.boxColor1} me-lg-2 mb-2 mb-lg-0`}>
               <Link href={'/chatbot'} >
                 <p className='text-dark text-uppercase mb-0'><strong>CONNECT WITH FINANCIAL ASSISTANT</strong></p>

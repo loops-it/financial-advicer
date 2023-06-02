@@ -372,7 +372,7 @@ console.log(waitingLiveAgent)
     if (messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-  }, [chatMessages]);
+  }, [chatMessages, closeRating, showChatRating, closeState, waitingLiveAgent]);
 
 
 
@@ -430,7 +430,7 @@ console.log(waitingLiveAgent)
       </div>
       {/* chat top header end =======================*/}
 
-      <div className={`${styles.messageWrapper}`}>
+      <div ref={messageListRef} className={`${styles.messageWrapper}`}>
 
 
 
@@ -549,7 +549,7 @@ console.log(waitingLiveAgent)
 
         {/* message conversation container =================*/}
         <div
-          ref={messageListRef}
+          
           className={`${styles.messageContentWrapper} d-flex flex-column`}
         >
 
