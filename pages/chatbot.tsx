@@ -470,7 +470,7 @@ console.log(waitingLiveAgent)
                   مرحبًا بكم في DFCC Bank. يرجى تحديد اللغة للبدء.
                 </p>
 
-                <div className="d-flex flex-row welcome-language-select">
+                <div className="d-flex flex-row welcome-language-select w-100">
                   <div className="col-6 p-1">
                     <button
                       className=" px-3 py-2 rounded"
