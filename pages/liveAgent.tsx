@@ -318,7 +318,7 @@ const LiveAgent = () => {
     if (messageListRef.current) {
       messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
     }
-  }, [chatMessages, closeRating, showChatRating, closeState, waitingLiveAgent, busyAgent]);
+  }, [chatMessages, closeRating, showChatRating, closeState, waitingLiveAgent, busyAgent, agentInfoMsg]);
 
 
 
@@ -411,14 +411,14 @@ const LiveAgent = () => {
             </div>
           </div>
           
-      {
+      {/* {
             agentInfoMsg && (
               <div className="alert alert-info mx-3 text-center  alert-dismissible fade show" role="alert">
                 Now you are chatting with {agentName}
                 <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
             )
-          }
+          } */}
         <div
           className={`${styles.messageContentWrapper} d-flex flex-column`}
         >
@@ -497,6 +497,14 @@ const LiveAgent = () => {
               </div>
             )
           }
+          {
+          agentInfoMsg && (
+            <div className="alert alert-info mx-3 text-center  alert-dismissible fade show" role="alert">
+              Now you are chatting with {agentName}
+              <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          )
+        }
           {
             closeState && (
               <div className="d-flex bg-chat-close-msg text-center justify-content-center py-3">
