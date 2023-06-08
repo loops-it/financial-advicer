@@ -6,6 +6,18 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 import Image from 'next/image';
 import { BsFillMicMuteFill, BsFillMicFill } from 'react-icons/bs';
 import { Document } from 'langchain/document';
+import dynamic from 'next/dynamic';
+
+
+const DynamicSpeechRecognition = dynamic(
+  () => import('../components/SpeechRecog'),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  }
+);
+
+
 
 const Videobot = () => {
   const [query, setQuery] = useState<string>('');
@@ -50,37 +62,6 @@ const Videobot = () => {
     setId("video"+newId);
   }, []);
 
-  // useEffect(() => {
-  //   // get api message in to one state
-  //   try {
-  //     const latestApiMessage = messageState.messages.reduce((acc, message) => {
-  //       if (message.type === 'apiMessage') {
-  //         return message.message;
-  //       }
-  //       console.log('acc : ', acc)
-  //       return acc;
-
-  //     }, '');
-
-  //     setApiMessageFinal(latestApiMessage);
-  //     setMsgUpdated(true);
-  //     console.log('apiMessageFinal : ', apiMessageFinal)
-  //     if (msgUpdated === true) {
-  //       console.log(" msgUpdated : ", msgUpdated);
-  //       handleVideo()
-  //       // setTimeout(async ()=> {
-  //       //         await handleVideo();
-  //       //       },5000)
-  //     }
-
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-
-  // }, [apiMessageFinal, msgUpdated]);
-
-
-
 
 
 
@@ -89,57 +70,24 @@ const Videobot = () => {
 
 
   //handle form submission
-  async function handleSubmit() {
+  async function handleSubmit(transcriptMsg: string) {
     // e.preventDefault();
 
     setError(null);
     setLoading(true);
-    // const response = await fetch('https://solutions.it-marketing.website/recording-start', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({
-    //     chatId: id,
-    //     apiType: "video",
-    //   }),
-    // });
+    
+    const question = transcriptMsg;
 
-    // if (response.status !== 200) {
-    //   const error = await response.json();
-    //   throw new Error(error.message);
-    // }
-    // const data = await response.json();
-    // console.log("videobot : ",data.transcript.transcript)
-    const response = await fetch('/api/speech_recognition', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-        body: JSON.stringify({
-        chatId: id,
-        apiType: "audio"
-      }),
-    });
+       
+    
 
-    if (response.status !== 200) {
-      const error = await response.json();
-      throw new Error(error.message);
-    }
-
-    const data = await response.json();
-    console.log("audiobot : ",data.transcript.transcript)
-    // const question = data.transcript.transcript;
-
-    if (data.transcript.status === "success") {
-      // const question = data;
-      const question = data.transcript.transcript;
+    
       if (!question) {
         alert('Racording failed!');
         setLoading(false);
         return;
       }
-  
+
       setMessageState((state) => ({
         ...state,
         messages: [
@@ -158,13 +106,14 @@ const Videobot = () => {
       const ctrl = new AbortController();
   
       try {
-        const response = await fetch('https://solutions.it-marketing.website/video-chatGpt-response', {
+        const response = await fetch('https://solutions.it-marketing.website/translate-to-english-api', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          question: question,
+          user_Message: question,
+          language: "English",
           chatId: id,
         }),
       });
@@ -175,7 +124,7 @@ const Videobot = () => {
       }
   
       console.log("GPTdata - ",data);
-      setAvatarURL(data.avatarVideoURL)
+      setAvatarURL("data.avatarVideoURL")
   
       setMessageState((state) => ({
         history: [...state.history, [question, state.pending ?? '']],
@@ -183,7 +132,7 @@ const Videobot = () => {
           ...state.messages,
           {
             type: 'apiMessage',
-            message: data.finalResponse,
+            message: data.bot_reply,
             sourceDocs: state.pendingSourceDocs,
           },
         ],
@@ -198,54 +147,10 @@ const Videobot = () => {
         setError('An error occurred while fetching the data. Please try again.');
         console.log('error', error);
       }
-    } 
+    
   }
 
 
-
-
-
-
-
-
-
-
-
-
-  // async function handleVideo() {
-
-  //   console.log("handle Video -->  : ", apiMessageFinal)
-  //   if (apiMessageFinal) {
-  //     const responseVideo = await fetch(
-  //       'http://localhost:5000/get-video',
-  //       {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({
-  //           resultMessage: apiMessageFinal,
-  //         }),
-  //       },
-  //     );
-
-  //     if (responseVideo.status !== 200) {
-  //       const error = await responseVideo.json();
-  //       throw new Error(error.message);
-  //     }
-
-  //     const videoUrl = await responseVideo.json();
-  //     setAvatarURL(videoUrl.avatarVideoURL);
-  //     console.log("------ url : ", avatarUrl);
-
-  //     return videoUrl;
-  //   } else {
-  //     console.log('apiMessageFinal is empty');
-  //     return;
-  //   }
-
-
-  // }
 
 
 
@@ -405,7 +310,7 @@ const Videobot = () => {
 
       {/* input fields =================*/}
       <div className={`${styles.inputContainer}`}>
-        <button
+        {/* <button
           type="button"
           onClick={handleSubmit}
           disabled={loading}
@@ -418,7 +323,8 @@ const Videobot = () => {
           ) : (
             <BsFillMicMuteFill className="sendIcon" />
           )}
-        </button>
+        </button> */}
+        <DynamicSpeechRecognition onSubmit={handleSubmit} />
       </div>
       {error && (
         <div className="border border-red-400 rounded-md p-4">
